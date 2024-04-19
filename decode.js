@@ -6,6 +6,7 @@ console.log(decode(process.argv[2]));
 // Returns the MIPS instruction as a string
 function decode(input) {
     // Detect bad inputs
+    // TODO: strip input of spaces
     const regex = /[0-1]{32}/;
     if(!regex.test(input)) {
         return "You must enter an encoded MIPS instruction in 32-bit binary format.";
@@ -17,7 +18,7 @@ function decode(input) {
         return decodeRtype(input);
     } else if(opcode === 2 || opcode === 3) {
         return decodeJtype(input, opcode);
-    } else if(opcode >= 3) {
+    } else if(opcode > 3) {
         return decodeItype(input, opcode);
     } else {
         return "You must enter a valid encoded MIPS instruction.";
@@ -26,7 +27,7 @@ function decode(input) {
 
 // Decodes an R-type instruction
 function decodeRtype(input) {
-
+    const funct = input.substring(26);
 }
 
 // Decodes an I-type instruction
