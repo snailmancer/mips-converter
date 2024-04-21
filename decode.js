@@ -1,3 +1,5 @@
+const conversions = require('./conversions.js');
+
 // node decode.js [input]
 console.log(decode(process.argv[2]));
 
@@ -27,7 +29,39 @@ function decode(input) {
 
 // Decodes an R-type instruction
 function decodeRtype(input) {
-    const funct = input.substring(26);
+    // Get the funct code
+    let funct = input.substring(26);
+
+    // Check special case for jalr instruction
+    if(funct === '001001') {
+        if(input.substring(16, 22) === '11111') {
+            funct += 'b';
+        } else {
+            funct += 'a';
+        }
+    }
+
+    // Get format info from table and replace each value (rs, rt, rd, shamt) with register from input
+    const formatInfo = conversions.functToInst[funct];
+    let ret = formatInfo.format;
+
+    if(formatInfo.hasRS) {
+        ret = ret.replace('rs', conversions.binToReg[input.substring(6, 11)]);
+    }
+
+    if(formatInfo.hasRT) {
+        ret = ret.replace('rt', conversions.binToReg[input.substring(11, 16)]);
+    }
+
+    if(formatInfo.hasRD) {
+        ret = ret.replace('rd', conversions.binToReg[input.substring(16, 21)]);
+    }
+
+    if(formatInfo.hasShamt) {
+        ret = ret.replace('shamt', parseInt(input.substring(21, 26), 2));
+    }
+
+    return ret;
 }
 
 // Decodes an I-type instruction

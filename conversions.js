@@ -31,7 +31,6 @@ var binToReg = {
     '11101' : '$sp',
     '11110' : '$fp',
     '11111' : '$ra',
-
 }
 
 var opcodeToInst = {
@@ -65,7 +64,8 @@ var functToInst = {
     '000110' : {format: 'srlv rd, rt, rs', hasRS: true, hasRT: true, hasRD: true, hasShamt: false},
     '000111' : {format: 'srav rd, rt, rs', hasRS: true, hasRT: true, hasRD: true, hasShamt: false},
     '001000' : {format: 'jr rs', hasRS: true, hasRT: false, hasRD: false, hasShamt: false},
-    '001001' : {format: 'jalr rd, rs', hasRS: true, hasRT: false, hasRD: true, hasShamt: false}, // CAN BE jalr rs IF rd = 31 SUPPLIED, CHECK IT
+    '001001a' : {format: 'jalr rd, rs', hasRS: true, hasRT: false, hasRD: true, hasShamt: false}, // CAN BE jalr rs IF rd = 31 SUPPLIED, CHECK IT
+    '001001b' : {format: 'jalr rs', hasRS: true, hasRT: false, hasRD: false, hasShamt: false},
     '001100' : {format: 'syscall', hasRS: false, hasRT: false, hasRD: false, hasShamt: false},
     '010000' : {format: 'mfhi rd', hasRS: false, hasRT: false, hasRD: true, hasShamt: false},
     '010001' : {format: 'mthi rs', hasRS: true, hasRT: false, hasRD: false, hasShamt: false},
@@ -85,4 +85,10 @@ var functToInst = {
     '100111' : {format: 'nor rd, rs, rt', hasRS: true, hasRT: true, hasRD: true, hasShamt: false},
     '101010' : {format: 'slt rd, rs, rt', hasRS: true, hasRT: true, hasRD: true, hasShamt: false},
     '101011' : {format: 'sltu rd, rs, rt', hasRS: true, hasRT: true, hasRD: true, hasShamt: false}
+}
+
+module.exports = {
+    binToReg: binToReg,
+    opcodeToInst: opcodeToInst,
+    functToInst: functToInst
 }
