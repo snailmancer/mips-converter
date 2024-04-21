@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>MIPS Decoder</title>
+</head>
+<body>
+    <h1>MIPS Decoder</h1>
+    <form id="decode-form">
+        <label for="decode-input">Input (Encoded MIPS Instruction):</label>
+        <input type="text" id="decode-input" name="decode-input" required minlength="32" maxlength="32" size="50" />
+        <input type="submit" id="decode-submit" value="Decode"/>
+    </form>
+
+    <script type="text/javascript" src="./api/conversions.js"></script>
+    <script type="text/javascript" src="./api/decode.js"></script>
+    <script>
+        let instruction = '';
+        const input = document.querySelector('#decode-input');
+        input.addEventListener('input', (e) => {
+            instruction = e.target.value;
+        })
+
+        const form = document.querySelector('#decode-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get input, send it to decode.js
+            const output = decode(instruction);
+
+            // Check if output display already exists, if so, edit it, if not, add it
+            let outputDisplay = document.querySelector('#output-display');
+            if(outputDisplay !== null) {
+                outputDisplay.innerHTML = output;
+            } else {
+                outputDisplay = document.createElement('h1');
+                outputDisplay.innerHTML = output;
+                outputDisplay.id = 'output-display';
+                form.parentNode.appendChild(outputDisplay);
+            }
+        });
+    </script>
+</body>
+</html>

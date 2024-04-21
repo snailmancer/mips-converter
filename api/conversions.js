@@ -87,8 +87,8 @@ var functToInst = {
     '101011' : {format: 'sltu rd, rs, rt', hasRS: true, hasRT: true, hasRD: true, hasShamt: false}
 }
 
-module.exports = {
-    binToReg: binToReg,
-    opcodeToInst: opcodeToInst,
-    functToInst: functToInst
-}
+// module.exports = {
+//     binToReg: binToReg,
+//     opcodeToInst: opcodeToInst,
+//     functToInst: functToInst
+// }
