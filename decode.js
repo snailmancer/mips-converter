@@ -41,7 +41,7 @@ function decodeRtype(input) {
         }
     }
 
-    // Get format info from table and replace each value (rs, rt, rd, shamt) with register from input
+    // Get format info from table and replace each value (rs, rt, rd, shamt) with register/value from input
     const formatInfo = conversions.functToInst[funct];
     let ret = formatInfo.format;
 
@@ -65,8 +65,28 @@ function decodeRtype(input) {
 }
 
 // Decodes an I-type instruction
-function decodeItype(input, opcode) {
+function decodeItype(input) {
+    // Get the opcode
+    const opcode = input.substring(0, 6);
 
+    // Get the immediate value
+    const imm = parseInt(input.substring(16), 2);
+
+    // Get format info from table and replace each value (rs, rt, imm) with register/value from input
+    const formatInfo = conversions.opcodeToInst[opcode];
+    let ret = formatInfo.format;
+
+    ret = ret.replace('imm', imm);
+
+    if(formatInfo.hasRS) {
+        ret = ret.replace('rs', conversions.binToReg[input.substring(6, 11)]);
+    }
+
+    if(formatInfo.hasRT) {
+        ret = ret.replace('rt', conversions.binToReg[input.substring(11, 16)]);
+    }
+
+    return ret;
 }
 
 // Decodes a J-type instruction
