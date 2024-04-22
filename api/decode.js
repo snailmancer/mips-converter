@@ -9,6 +9,7 @@
 function decode(input) {
     // Detect bad inputs
     // TODO: strip input of spaces
+    input = input.replaceAll(' ', '');
     const regex = /[0-1]{32}/;
     if(!regex.test(input)) {
         return "You must enter an encoded MIPS instruction in 32-bit binary format.";
