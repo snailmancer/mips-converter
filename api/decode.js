@@ -5,7 +5,7 @@
 
 // Takes in an encoded MIPS instruction in 32-bit binary format
 // Converts it to a MIPS instruction such as addi $t0, $t1, 3
-// Returns the MIPS instruction as a string
+// Returns 'Decoded instruction: [MIPS instruction as a string]' OR an error message relating to bad inputs
 function decode(input) {
     // Detect bad inputs
     // TODO: strip input of spaces
@@ -43,24 +43,11 @@ function decodeRtype(input) {
     }
 
     // Get format info from table and replace each value (rs, rt, rd, shamt) with register/value from input
-    const formatInfo = functToInst[funct];
-    let ret = formatInfo.format;
-
-    if(formatInfo.hasRS) {
-        ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
-    }
-
-    if(formatInfo.hasRT) {
-        ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
-    }
-
-    if(formatInfo.hasRD) {
-        ret = ret.replace('rd', binToReg[input.substring(16, 21)]);
-    }
-
-    if(formatInfo.hasShamt) {
-        ret = ret.replace('shamt', parseInt(input.substring(21, 26), 2));
-    }
+    let ret = functToInst[funct];
+    ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
+    ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
+    ret = ret.replace('rd', binToReg[input.substring(16, 21)]);
+    ret = ret.replace('shamt', parseInt(input.substring(21, 26), 2));
 
     return 'Decoded instruction: ' + ret;
 }
@@ -74,18 +61,10 @@ function decodeItype(input) {
     const imm = parseInt(input.substring(16), 2);
 
     // Get format info from table and replace each value (rs, rt, imm) with register/value from input
-    const formatInfo = opcodeToInst[opcode];
-    let ret = formatInfo.format;
-
+    let ret = opcodeToInst[opcode];
     ret = ret.replace('imm', imm);
-
-    if(formatInfo.hasRS) {
-        ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
-    }
-
-    if(formatInfo.hasRT) {
-        ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
-    }
+    ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
+    ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
 
     return 'Decoded instruction: ' + ret;
 }
