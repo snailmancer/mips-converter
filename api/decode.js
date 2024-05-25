@@ -4,7 +4,7 @@
 // console.log(decode(process.argv[2]));
 
 // Takes in an encoded MIPS instruction in 32-bit binary format
-// Converts it to a MIPS instruction such as addi $t0, $t1, 3
+// Converts it to a MIPS instruction such as 'addi $t0, $t1, 3'
 // Returns the MIPS instruction as a string
 function decode(input) {
     // Detect bad inputs
