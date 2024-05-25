@@ -96,3 +96,5 @@ function decodeJtype(input, opcode) {
     const address = "0x" + parseInt(input.substring(6), 2).toString(16); // Address in hexadecimal
     return 'Decoded instruction: ' + prefix + address;
 }
+
+module.exports = decode;
