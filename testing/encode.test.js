@@ -14,6 +14,8 @@ test('Encode J-type instructions', () => {
 test('Encode 1-arg instructions', () => {
     expect(encode('jr $ra')).toEqual(e + '000000 11111 00000 00000 00000 001000');
     expect(encode('mflo $t1')).toEqual(e + '000000 00000 00000 01001 00000 010010');
+    expect(encode('jalr $t0')).toEqual(e + '000000 01000 00000 11111 00000 001000');
+    expect(encode('jalr $t1, $t0')).toEqual(e + '000000 01000 00000 01001 00000 001000');
 });
 
 test('Encode 2-arg instructions', () => {
@@ -44,4 +46,16 @@ test('Encode bad inputs', () => {
     expect(encode('add$t0$t1$t2').startsWith('Error')).toBeTruthy();
     expect(encode('____').startsWith('Error')).toBeTruthy();
     expect(encode('').startsWith('Error')).toBeTruthy();
+});
+
+test('Encode wrong formats', () => {
+    expect(encode('mult $t0, 12($t1)').startsWith('Error')).toBeTruthy();
+    expect(encode('jr $t0, $t1, 23').startsWith('Error')).toBeTruthy();
+    expect(encode('sra $t0, $t1').startsWith('Error')).toBeTruthy();
+    expect(encode('sra $t0, $t1, $t2').startsWith('Error')).toBeTruthy();
+    expect(encode('j $t0').startsWith('Error')).toBeTruthy();
+    expect(encode('j $t0, $t4').startsWith('Error')).toBeTruthy();
+    expect(encode('lb $t0, $t1').startsWith('Error')).toBeTruthy();
+    expect(encode('beq $t0, $t1, $t2').startsWith('Error')).toBeTruthy();
+    expect(encode('add $t0, $t1, 100').startsWith('Error')).toBeTruthy();
 });

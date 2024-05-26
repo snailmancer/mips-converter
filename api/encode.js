@@ -5,7 +5,8 @@
 // Converts it to an encoded MIPS instruction in 32-bit binary format
 // Returns the encoded MIPS instruction as a 32-bit string OR an error message relating to bad inputs
 function encode(input) {
-    const regex = /([a-zA-z]{1,7}) ?([$a-zA-z0-9]{1,})?(, )?([0-9]{1,})?\(?([$a-zA-z0-9]{1,})?\)?(, )?([$a-zA-z0-9]{1,})?/;
+    const regex = /([a-zA-z]{1,7}) ?([$a-zA-z0-9]+)?(, )?([0-9]+)?\(?([$a-zA-z0-9]+)?\)?(, )?([$a-zA-z0-9]+)?/;
+    // do regex.test(input) and return error if false?
     const match = input.match(regex);
 
     // instruction = match[1]
