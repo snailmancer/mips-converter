@@ -29,4 +29,5 @@ test('Decode bad inputs', () => {
     expect(decode('010000 01000 01001 0000000000010100').startsWith('Error')).toBeTruthy();
     expect(decode('0001010').startsWith('Error')).toBeTruthy();
     expect(decode('000000 01000 01001 00000 00000 010100 0001').startsWith('Error')).toBeTruthy();
+    expect(decode('').startsWith('Error')).toBeTruthy();
 });
