@@ -12,7 +12,7 @@ function decode(input) {
     input = input.replaceAll(' ', '');
     const regex = /[0-1]{32}/;
     if(!regex.test(input)) {
-        return "You must enter an encoded MIPS instruction in 32-bit binary format.";
+        return "Error: You must enter an encoded MIPS instruction in 32-bit binary format.";
     }
 
     // First, determine the type of the instruction (R, I, or J)
@@ -24,7 +24,7 @@ function decode(input) {
     } else if(opcode > 3) {
         return decodeItype(input, opcode);
     } else {
-        return "You must enter a valid encoded MIPS instruction.";
+        return "Error: You must enter a valid encoded MIPS instruction.";
     }
 }
 
