@@ -7,15 +7,22 @@
     <title>MIPS Decoder</title>
 </head>
 <body>
-    <h1>MIPS Decoder</h1>
+    <h1>MIPS Converter</h1>
     <form id="decode-form">
-        <label for="decode-input">Input (Encoded MIPS Instruction):</label>
-        <input type="text" id="decode-input" name="decode-input" required minlength="32" maxlength="37" size="50" />
+        <label for="decode-input">Decode:</label>
+        <input type="text" id="decode-input" name="decode-input" required minlength="32" maxlength="37" size="50" placeholder="Enter 32-bit Encoded MIPS Instruction..." />
         <input type="submit" id="decode-submit" value="Decode"/>
+    </form>
+
+    <form id="encode-form">
+        <label for="encode-input">Encode:</label>
+        <input type="text" id="encode-input" name="encode-input" required size="50" placeholder="Enter a MIPS Instruction (ex: jr $ra)..." />
+        <input type="submit" id="encode-submit" value="Encode"/>
     </form>
 
     <script type="text/javascript" src="./api/conversions.js"></script>
     <script type="text/javascript" src="./api/decode.js"></script>
+    <script type="text/javascript" src="./api/encode.js"></script>
     <script>
         let instruction = '';
         const input = document.querySelector('#decode-input');
