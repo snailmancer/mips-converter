@@ -3,6 +3,7 @@
 // Returns the encoded MIPS instruction as a 32-bit string OR an error message relating to bad inputs
 function encode(input) {
     const regex = /(?<inst>[a-zA-z]{1,7}) ?(?<arg1>[$a-zA-z0-9]{1,})?(, )?(?<shamt>[0-9]{1,})?\(?(?<arg2>[$a-zA-z0-9]{1,})?\)?(, )?(?<arg3>[$a-zA-z0-9]{1,})?/;
+    return 'Hello';
 }
 
 module.exports = encode;

@@ -87,8 +87,9 @@ var functToInst = {
     '101011' : 'sltu rd, rs, rt'
 }
 
-// module.exports = {
-//     binToReg: binToReg,
-//     opcodeToInst: opcodeToInst,
-//     functToInst: functToInst
-// }
+var module = module || {}
+module.exports = {
+    binToReg: binToReg,
+    opcodeToInst: opcodeToInst,
+    functToInst: functToInst
+}

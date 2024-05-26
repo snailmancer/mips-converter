@@ -1,7 +1,8 @@
-// const conversions = require('./conversions.js');
-
-// node decode.js [input]
-// console.log(decode(process.argv[2]));
+// Conversion tables
+// Through HTML, these will already be defined, otherwise (Unit Tests) we must require them from conversions.js
+var binToReg = binToReg || require('../api//conversions.js').binToReg;
+var functToInst = functToInst || require('../api//conversions.js').functToInst;
+var opcodeToInst = opcodeToInst || require('../api/conversions.js').opcodeToInst;
 
 // Takes in an encoded MIPS instruction in 32-bit binary format
 // Converts it to a MIPS instruction such as 'addi $t0, $t1, 3'
@@ -44,6 +45,11 @@ function decodeRtype(input) {
 
     // Get format info from table and replace each value (rs, rt, rd, shamt) with register/value from input
     let ret = functToInst[funct];
+
+    if(!ret) {
+        return 'Error: The given funct code is not valid/supported.'
+    }
+
     ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
     ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
     ret = ret.replace('rd', binToReg[input.substring(16, 21)]);
@@ -62,6 +68,11 @@ function decodeItype(input) {
 
     // Get format info from table and replace each value (rs, rt, imm) with register/value from input
     let ret = opcodeToInst[opcode];
+
+    if(!ret) {
+        return 'Error: The given opcode is not valid/supported.'
+    }
+
     ret = ret.replace('imm', imm);
     ret = ret.replace('rs', binToReg[input.substring(6, 11)]);
     ret = ret.replace('rt', binToReg[input.substring(11, 16)]);
