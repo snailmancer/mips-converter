@@ -9,8 +9,8 @@ test('Decode R-type instructions', () => {
     expect(decode('000000 00000 01111 10100 01000 000000')).toEqual(d + 'sll $s4, $t7, 8');
     expect(decode('000000 00000 00000 00000 00000 001100')).toEqual(d + 'syscall');
     expect(decode('000000 01000 01001 00000 00000 011001')).toEqual(d + 'multu $t0, $t1');
-    expect(decode('000000 01000 00000 11111 00000 001000')).toEqual(d + 'jalr $t0');
-    expect(decode('000000 01000 00000 01001 00000 001000')).toEqual(d + 'jalr $t1, $t0');
+    expect(decode('000000 01000 00000 11111 00000 001001')).toEqual(d + 'jalr $t0');
+    expect(decode('000000 01000 00000 01001 00000 001001')).toEqual(d + 'jalr $t1, $t0');
 });
 
 test('Decode I-type instructions', () => {

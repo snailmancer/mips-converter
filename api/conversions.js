@@ -157,7 +157,7 @@ var regToBin = {
     '$31' : '11111'
 }
 
-// Fields rs, rt, rd, shamt, and imm will be mapped to a number representing which argument they are
+// Fields rs, rt, rd, shamt, imm, and address will be mapped to a number representing which argument they are
 // 1-3 correspond to args 1-3
 // 4 corresponds to the offset
 var instToFormat = {
@@ -168,7 +168,7 @@ var instToFormat = {
     'srlv' : {rd:1, rt:2, rs:3, type:'r', code:'000110'},
     'srav' : {rd:1, rt:2, rs:3, type:'r', code:'000111'},
     'jr' : {rs:1, type:'r', code:'001000'},
-    'jalr' : {type:'r', code:'001001'},
+    'jalr' : {type:'r', code:'001001'}, // argument info is not provided here as this is handled as a special case (as it can take either 1 or 2 arguments)
     'syscall' : {type:'r', code:'001100'},
     'mfhi' : {rd:1, type:'r', code:'010000'},
     'mthi' : {rs:1, type:'r', code:'010001'},
@@ -208,8 +208,8 @@ var instToFormat = {
     'sb' : {rt:1, rs:2, imm:4, type:'i', code:'101000'},
     'sh' : {rt:1, rs:2, imm:4, type:'i', code:'101001'},
     'sw' : {rt:1, rs:2, imm:4, type:'i', code:'101011'},
-    'j' : {type:'j', code:'000010'},
-    'jal' : {type:'j', code:'000011'}
+    'j' : {address:1, type:'j', code:'000010'},
+    'jal' : {address:1, type:'j', code:'000011'}
 }
 
 
@@ -218,5 +218,7 @@ var module = module || {}
 module.exports = {
     binToReg: binToReg,
     opcodeToInst: opcodeToInst,
-    functToInst: functToInst
+    functToInst: functToInst,
+    binToReg: binToReg,
+    instToFormat: instToFormat
 }

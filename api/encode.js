@@ -1,7 +1,7 @@
 // Conversion tables
 // Through HTML, these will already be defined, otherwise (Unit Tests) we must require them from conversions.js
-var regToBin = regToBin || require('../api//conversions.js').regToBin;
-var instToFormat = instToFormat || require('../api//conversions.js').instToFormat;
+var regToBin = regToBin || require('./conversions.js').regToBin;
+var instToFormat = instToFormat || require('./conversions.js').instToFormat;
 
 // Takes in a MIPS instruction in string form such as 'addi $t0, $t1, 3'
 // Converts it to an encoded MIPS instruction in 32-bit binary format
@@ -92,4 +92,4 @@ function testGivenArguments(instruction, arg1, arg2, arg3, offset) {
     return ret;
 }
 
-module.exports = encode;
+module.exports = {encode, testGivenArguments};

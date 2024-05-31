@@ -1,8 +1,8 @@
 // Conversion tables
 // Through HTML, these will already be defined, otherwise (Unit Tests) we must require them from conversions.js
-var binToReg = binToReg || require('../api//conversions.js').binToReg;
-var functToInst = functToInst || require('../api//conversions.js').functToInst;
-var opcodeToInst = opcodeToInst || require('../api/conversions.js').opcodeToInst;
+var binToReg = binToReg || require('./conversions.js').binToReg;
+var functToInst = functToInst || require('./conversions.js').functToInst;
+var opcodeToInst = opcodeToInst || require('./conversions.js').opcodeToInst;
 
 // Takes in an encoded MIPS instruction in 32-bit binary format
 // Converts it to a MIPS instruction such as 'addi $t0, $t1, 3'
@@ -36,7 +36,7 @@ function decodeRtype(input) {
 
     // Check special case for jalr instruction
     if(funct === '001001') {
-        if(input.substring(16, 22) === '11111') {
+        if(input.substring(16, 21) === '11111') {
             funct += 'b';
         } else {
             funct += 'a';
