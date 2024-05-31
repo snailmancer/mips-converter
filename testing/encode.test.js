@@ -59,3 +59,7 @@ test('Encode wrong formats', () => {
     expect(encode('beq $t0, $t1, $t2').startsWith('Error')).toBeTruthy();
     expect(encode('add $t0, $t1, 100').startsWith('Error')).toBeTruthy();
 });
+
+test('Test given arguments', () => {
+    
+});
