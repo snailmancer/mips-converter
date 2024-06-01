@@ -46,6 +46,10 @@ test('Encode bad inputs', () => {
     expect(encode('add$t0$t1$t2').startsWith('Error')).toBeTruthy();
     expect(encode('____').startsWith('Error')).toBeTruthy();
     expect(encode('').startsWith('Error')).toBeTruthy();
+    expect(encode('sll $t0, $t1, 56').startsWith('Error')).toBeTruthy();
+    expect(encode('sll $t0, $t1, -4').startsWith('Error')).toBeTruthy();
+    expect(encode('addi $t0, $t1, 70000').startsWith('Error')).toBeTruthy();
+    expect(encode('addi $t0, $t1, -10').startsWith('Error')).toBeTruthy();
 });
 
 test('Encode wrong formats', () => {
@@ -61,16 +65,16 @@ test('Encode wrong formats', () => {
 });
 
 test('Test given arguments', () => {
-    expect(testGivenArguments('add', '$t0', '$t1', '$t2', undefined)).toBeTruthy();
-    expect(testGivenArguments('add', '$t0', '$t1', undefined, undefined)).toBeFalsy();
-    expect(testGivenArguments('syscall', undefined, undefined, undefined, undefined)).toBeTruthy();
-    expect(testGivenArguments('syscall', '$t0', '$t1', undefined, undefined)).toBeFalsy();
-    expect(testGivenArguments('mult', '$t0', '$t1', undefined, '12')).toBeFalsy();
-    expect(testGivenArguments('jr', '$t0', '$t1', '23', undefined)).toBeFalsy();
-    expect(testGivenArguments('lb', '$t0', '$t1', undefined, undefined)).toBeFalsy();
-    expect(testGivenArguments('j', '0xfe12', undefined, undefined, undefined)).toBeTruthy();
-    expect(testGivenArguments('j', '0xfe12', '$t0', undefined, undefined)).toBeFalsy();
-    expect(testGivenArguments('jalr', '$t0', '$t1', undefined, undefined)).toBeTruthy();
-    expect(testGivenArguments('jalr', '$t0', undefined, undefined, undefined)).toBeTruthy();
-    expect(testGivenArguments('jalr', '$t0', undefined, undefined, '12')).toBeFalsy();
+    expect(testGivenArguments(['add', '$t0', '$t1', '$t2', undefined])).toBeTruthy();
+    expect(testGivenArguments(['add', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['syscall', undefined, undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['syscall', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['mult', '$t0', '$t1', undefined, '12'])).toBeFalsy();
+    expect(testGivenArguments(['jr', '$t0', '$t1', '23', undefined])).toBeFalsy();
+    expect(testGivenArguments(['lb', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['j', '0xfe12', undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['j', '0xfe12', '$t0', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['jalr', '$t0', '$t1', undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['jalr', '$t0', undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['jalr', '$t0', undefined, undefined, '12'])).toBeFalsy();
 });

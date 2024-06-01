@@ -21,65 +21,140 @@ function encode(input) {
 
     // Get each part of the input using the regex
     const match = input.match(regex);
-    const instruction = match[1];
-    const arg1 = match[2];
-    const offset = match[4];
-    const arg2 = match[5];
-    const arg3 = match[7];
+
+    // [instruction, arg1, arg2, arg3, offset]
+    // Making this into a list so I can access each argument dynamically
+    const args = [match[1], match[2], match[5], match[7], match[4]];
 
     // Confirm that the given instruction is valid
-    if(instToFormat[instruction] === undefined) {
-        return 'Error: The instruction you provided [' + instruction + '] is not a valid MIPS Instruction or is not supported.';
+    if(instToFormat[args[0]] === undefined) {
+        return 'Error: The instruction you provided [' + args[0] + '] is not a valid MIPS Instruction or is not supported.';
     }
 
     // Confirm that only the required arguments were passed for the given instruction
     // If not, return error - wrong format for the given instruction
-    if(!testGivenArguments(instruction, arg1, arg2, arg3, offset)) {
-        return 'Error: You have not provided the proper arguments for the given instruction [' + instruction + '].';
+    if(!testGivenArguments(args)) {
+        return 'Error: You have not provided the proper arguments for the given instruction [' + args[0] + '].';
     }
 
-    // First find opcode.
-        // need to find type (r, i, or j)
-        // if r type, opcode is '000000'
-            // otherwise, opcode is the code found in conversion table
-        // if j type, put opcode and then convert arg1 into binary and return encoded result (any code below will be evaluating R type or I type)
+    // Begin building the output
+    let ret = 'Encoded instruction: ';
+    const format = instToFormat[args[0]];
+
+    // First, add the opcode to ret
+    if(format.type === 'r') {
+        ret += '000000 ';
+    } else {
+        ret += format.code + ' ';
+        if(format.type === 'j') {
+            // Construct encoded J-type instruction
+            try {
+                // Convert arg1 (hex value) to binary and prepend 0's until it is 26 chars long,
+                // then append to ret and return it
+                const address = parseInt(args[1], 16).toString(2).padStart(26, '0');
+                return ret + address;
+            } catch(e) {
+                // If there was an error, the given address could not be converted from hexadecimal
+                console.log(e);
+                return 'Error: The given address [' + args[1] + '] could not be converted from hexadecimal.';
+            }
+        }
+    }
     
-    // Next, find rs
-        // we need to know which arg is rs
-        // When we know, convert that arg to binary from conversion table
-            // If rs is not in the format, put '00000'
-            // If register is invalid, return error
+    // From here on out, we are only dealing with R-type and I-type instructions, so rs and rt are present in both
+    // Next, find which arg is the rs register, convert it to binary and append to ret
+    if(format.rs) {
+        // Get the given rs register and convert it to binary (if valid) 
+        const reg = regToBin[args[format.rs]];
+        if(reg) {
+            ret += reg + ' ';
+        } else {
+            return 'Error: The given rs register [' + args[format.rs] + '] is invalid. Registers should be in the format "$t0" or "$17".';
+        }
+    } else {
+        ret += '00000 ';
+    }
     
-    // rt is same as rs
+    // Find which arg is the rt register, convert it to binary and append to ret
+    if(format.rt) {
+        // Get the given rt register and convert it to binary (if valid) 
+        const reg = regToBin[args[format.rt]];
+        if(reg) {
+            ret += reg + ' ';
+        } else {
+            return 'Error: The given rt register [' + args[format.rt] + '] is invalid. Registers should be in the format "$t0" or "$17".';
+        }
+    } else {
+        ret += '00000 ';
+    }
 
-    // split paths here
+    // The rest of the encoded result will differ greatly depending on type, so we split paths
+    if(format.type === 'r') {
+        // Find which arg is the rd register, convert it to binary and append to ret
+        if(format.rd) {
+            // Get the given rd register and convert it to binary (if valid) 
+            const reg = regToBin[args[format.rd]];
+            if(reg) {
+                ret += reg + ' ';
+            } else {
+                return 'Error: The given rd register [' + args[format.rd] + '] is invalid. Registers should be in the format "$t0" or "$17".';
+            }
+        } else {
+            ret += '00000 ';
+        }
 
-    // For R type,
-        // rd is the same as rs
-        // shamt is the third argument only for sll, srl, and sra
-            // if inst is not one of these, put '00000'
-        // take code from conversion table to put funct code
+        // Find which arg is the shamt value, convert to binary (if valid)
+        if(format.shamt) {
+            try {
+                const shamt = parseInt(args[format.shamt]);
+                if(shamt > 31 || shamt < 0) {
+                    return 'Error: The given shamt value [' + args[format.shamt] + '] must be between 0-31.';
+                } else {
+                    ret += shamt.toString(2).padStart(5, '0') + ' ';
+                }
+            } catch(e) {
+                console.log(e);
+                return 'Error: The given shamt value [' + args[format.shamt] + '] is invalid.';
+            }
+        } else {
+            ret += '00000 ';
+        }
 
-    // For I type,
-        // if format.offset is not undefined, that is the imm, convert to binary and add
-            // otherwise, the imm is the last argument (either arg2 or arg3)
+        // Append the funct code from conversions.js
+        ret += format.code;
+    } else {
+        // By process of elimination, we are only dealing with I-type instructions here
+        // Find which arg is the imm value, convert to binary (if valid)
+        try {
+            const imm = parseInt(args[format.imm]);
+            if(imm > 65535 || imm < 0) {
+                return 'Error: The given immediate value [' + args[format.imm] + '] must be between 0-65535.';
+            } else {
+                ret += imm.toString(2).padStart(16, '0');
+            }
+        } catch(e) {
+            console.log(e);
+            return 'Error: The given immediate value [' + args[format.imm] + '] is invalid.';
+        }
+    }
+
+    return ret;
 }
 
 // Given an instruction, (up to) 3 arguments, and (potentially) an offset from the input,
 // determines if the given arguments (i.e. those that are not undefined) match
-// the arguments required by the instruction
+// the arguments required by the instruction.
+// Parameter givenArgs = [instruction, arg1, arg2, arg3, offset], such a list is already created in encode()
 // Returns true if the supplied arguments match the instruction, false otherwise
-function testGivenArguments(instruction, arg1, arg2, arg3, offset) {
+function testGivenArguments(givenArgs) {
     // Handle the special case for instruction 'jalr'
-    if(instruction === 'jalr') {
-        return arg1 && !arg3 && !offset;
+    if(givenArgs[0] === 'jalr') {
+        return givenArgs[1] && !givenArgs[3] && !givenArgs[4];
     }
 
     // Gets all of the values of the format object (includes required arguments)
-    const requiredArgs = Object.values(instToFormat[instruction]);
-
+    const requiredArgs = Object.values(instToFormat[givenArgs[0]]);
     let ret = true;
-    const givenArgs = [instruction, arg1, arg2, arg3, offset];
 
     for(let i = 1; i<=4; i++) {
         if(requiredArgs.includes(i)) {
