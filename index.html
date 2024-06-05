@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles.css">
-    <title>MIPS Decoder</title>
+    <title>MIPS Converter</title>
 </head>
 <body>
     <h1>MIPS Converter</h1>
-    <form id="decode-form">
-        <label for="decode-input">Decode:</label>
-        <input type="text" id="decode-input" name="decode-input" required minlength="32" maxlength="37" size="50" placeholder="Enter 32-bit Encoded MIPS Instruction..." />
-        <input type="submit" id="decode-submit" value="Decode"/>
-    </form>
+    <div id="functions">
+        <form id="decode-form" class="section">
+            <h2>Decode:</h2>
+            <div class="inputs">
+                <input type="text" id="decode-input" name="decode-input" required minlength="32" maxlength="37" size="50" placeholder="Enter 32-bit Encoded MIPS Instruction..." />
+                <input type="submit" id="decode-submit" value="Decode"/>
+            </div>
+        </form>
 
-    <form id="encode-form">
-        <label for="encode-input">Encode:</label>
-        <input type="text" id="encode-input" name="encode-input" required size="50" placeholder="Enter a MIPS Instruction (ex: jr $ra)..." />
-        <input type="submit" id="encode-submit" value="Encode"/>
-    </form>
+        <form id="encode-form" class="section">
+            <h2>Encode:</h2>
+            <div class="inputs">
+                <input type="text" id="encode-input" name="encode-input" required size="50" placeholder="Enter a MIPS Instruction (ex: jr $ra)..." />
+                <input type="submit" id="encode-submit" value="Encode"/>
+            </div>
+        </form>
+    </div>
+
+    <div class="bottom">
+        <a href="https://web.archive.org/web/20240314034732/https://inst.eecs.berkeley.edu/~cs61c/resources/MIPS_help.html" target="_blank">Supported MIPS Instructions</a> | 
+        <a href="https://github.com/wcwallace0/mips-converter" target="_blank">GitHub Repository</a>
+    </div>
 
     <script type="text/javascript" src="./api/conversions.js"></script>
     <script type="text/javascript" src="./api/decode.js"></script>
@@ -35,17 +46,18 @@
             e.preventDefault();
 
             // Get input, send it to decode.js
-            const output = decode(decodeInstruction);
+            const output = '\u2937  ' + decode(decodeInstruction);
 
             // Check if output display already exists, if so, edit it, if not, add it
             let outputDisplay = document.querySelector('#decode-output');
             if(outputDisplay !== null) {
                 outputDisplay.innerHTML = output;
             } else {
-                outputDisplay = document.createElement('h1');
+                outputDisplay = document.createElement('h3');
                 outputDisplay.innerHTML = output;
                 outputDisplay.id = 'decode-output';
-                decodeForm.parentNode.appendChild(outputDisplay);
+                outputDisplay.classList.add('output');
+                decodeForm.appendChild(outputDisplay);
             }
         });
 
@@ -60,17 +72,18 @@
             e.preventDefault();
 
             // Get input, send it to decode.js
-            const output = encode(encodeInstruction);
+            const output = '\u2937  ' + encode(encodeInstruction);
 
             // Check if output display already exists, if so, edit it, if not, add it
             let outputDisplay = document.querySelector('#encode-output');
             if(outputDisplay !== null) {
                 outputDisplay.innerHTML = output;
             } else {
-                outputDisplay = document.createElement('h1');
+                outputDisplay = document.createElement('h3');
                 outputDisplay.innerHTML = output;
                 outputDisplay.id = 'encode-output';
-                encodeForm.parentNode.appendChild(outputDisplay);
+                outputDisplay.classList.add('output');
+                encodeForm.appendChild(outputDisplay);
             }
         });
     </script>
