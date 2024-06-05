@@ -14,8 +14,8 @@ test('Encode J-type instructions', () => {
 test('Encode 1-arg instructions', () => {
     expect(encode('jr $ra')).toEqual(e + '000000 11111 00000 00000 00000 001000');
     expect(encode('mflo $t1')).toEqual(e + '000000 00000 00000 01001 00000 010010');
-    expect(encode('jalr $t0')).toEqual(e + '000000 01000 00000 11111 00000 001000');
-    expect(encode('jalr $t1, $t0')).toEqual(e + '000000 01000 00000 01001 00000 001000');
+    expect(encode('jalr $t0')).toEqual(e + '000000 01000 00000 11111 00000 001001');
+    expect(encode('jalr $t1, $t0')).toEqual(e + '000000 01000 00000 01001 00000 001001');
 });
 
 test('Encode 2-arg instructions', () => {

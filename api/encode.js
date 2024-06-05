@@ -12,7 +12,7 @@ function encode(input) {
         return 'Encoded instruction: 000000 00000 00000 00000 00000 001100';
     }
 
-    const regex = /([a-zA-z]{1,7}) ([$a-zA-z0-9]+)?(, )?([0-9]+)?\(?([$a-zA-z0-9]+)?\)?(, )?([$a-zA-z0-9]+)?/;
+    const regex = /^([a-zA-z]{1,7}) ([$a-zA-z0-9]+)?(, )?([0-9]+(?=\())?\(?([$a-zA-z0-9]+)?\)?(, )?([$a-zA-z0-9]+)?$/;
 
     // Test input to see if it matches the general instruction format 
     if(!regex.test(input)) {
@@ -24,7 +24,7 @@ function encode(input) {
 
     // [instruction, arg1, arg2, arg3, offset]
     // Making this into a list so I can access each argument dynamically
-    const args = [match[1], match[2], match[5], match[7], match[4]];
+    let args = [match[1], match[2], match[5], match[7], match[4]];
 
     // Confirm that the given instruction is valid
     if(instToFormat[args[0]] === undefined) {
@@ -48,16 +48,28 @@ function encode(input) {
         ret += format.code + ' ';
         if(format.type === 'j') {
             // Construct encoded J-type instruction
-            try {
-                // Convert arg1 (hex value) to binary and prepend 0's until it is 26 chars long,
-                // then append to ret and return it
-                const address = parseInt(args[1], 16).toString(2).padStart(26, '0');
-                return ret + address;
-            } catch(e) {
-                // If there was an error, the given address could not be converted from hexadecimal
-                console.log(e);
+            // Convert arg1 (hex value) to binary and prepend 0's until it is 26 chars long,
+            // then append to ret and return it
+            const address = parseInt(args[1], 16);
+            if(address) {
+                return ret + address.toString(2).padStart(26, '0');
+            } else {
                 return 'Error: The given address [' + args[1] + '] could not be converted from hexadecimal.';
             }
+        }
+    }
+
+    // Handle the jalr special case here
+    if(args[0] === 'jalr') {
+        if(args[2]) {
+            // rd is supplied, so specify their positions
+            format.rs = 2;
+            format.rd = 1;
+        } else {
+            // rd is not supplied, so we put in $ra as argument 2
+            format.rs = 1;
+            format.rd = 2;
+            args[2] = '$ra';
         }
     }
     
@@ -105,15 +117,14 @@ function encode(input) {
 
         // Find which arg is the shamt value, convert to binary (if valid)
         if(format.shamt) {
-            try {
-                const shamt = parseInt(args[format.shamt]);
+            const shamt = parseInt(args[format.shamt]);
+            if(shamt) {
                 if(shamt > 31 || shamt < 0) {
                     return 'Error: The given shamt value [' + args[format.shamt] + '] must be between 0-31.';
                 } else {
                     ret += shamt.toString(2).padStart(5, '0') + ' ';
                 }
-            } catch(e) {
-                console.log(e);
+            } else {
                 return 'Error: The given shamt value [' + args[format.shamt] + '] is invalid.';
             }
         } else {
@@ -125,15 +136,14 @@ function encode(input) {
     } else {
         // By process of elimination, we are only dealing with I-type instructions here
         // Find which arg is the imm value, convert to binary (if valid)
-        try {
-            const imm = parseInt(args[format.imm]);
+        const imm = parseInt(args[format.imm]);
+        if(imm) {
             if(imm > 65535 || imm < 0) {
                 return 'Error: The given immediate value [' + args[format.imm] + '] must be between 0-65535.';
             } else {
                 ret += imm.toString(2).padStart(16, '0');
             }
-        } catch(e) {
-            console.log(e);
+        } else {
             return 'Error: The given immediate value [' + args[format.imm] + '] is invalid.';
         }
     }

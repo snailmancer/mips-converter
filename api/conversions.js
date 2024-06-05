@@ -219,6 +219,6 @@ module.exports = {
     binToReg: binToReg,
     opcodeToInst: opcodeToInst,
     functToInst: functToInst,
-    binToReg: binToReg,
+    regToBin: regToBin,
     instToFormat: instToFormat
 }

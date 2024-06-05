@@ -24,28 +24,53 @@
     <script type="text/javascript" src="./api/decode.js"></script>
     <script type="text/javascript" src="./api/encode.js"></script>
     <script>
-        let instruction = '';
-        const input = document.querySelector('#decode-input');
-        input.addEventListener('input', (e) => {
-            instruction = e.target.value;
-        })
+        let decodeInstruction = '';
+        const decodeInput = document.querySelector('#decode-input');
+        decodeInput.addEventListener('input', (e) => {
+            decodeInstruction = e.target.value;
+        });
 
-        const form = document.querySelector('#decode-form');
-        form.addEventListener('submit', (e) => {
+        const decodeForm = document.querySelector('#decode-form');
+        decodeForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             // Get input, send it to decode.js
-            const output = decode(instruction);
+            const output = decode(decodeInstruction);
 
             // Check if output display already exists, if so, edit it, if not, add it
-            let outputDisplay = document.querySelector('#output-display');
+            let outputDisplay = document.querySelector('#decode-output');
             if(outputDisplay !== null) {
                 outputDisplay.innerHTML = output;
             } else {
                 outputDisplay = document.createElement('h1');
                 outputDisplay.innerHTML = output;
-                outputDisplay.id = 'output-display';
-                form.parentNode.appendChild(outputDisplay);
+                outputDisplay.id = 'decode-output';
+                decodeForm.parentNode.appendChild(outputDisplay);
+            }
+        });
+
+        let encodeInstruction = '';
+        const encodeInput = document.querySelector('#encode-input');
+        encodeInput.addEventListener('input', (e) => {
+            encodeInstruction = e.target.value;
+        });
+
+        const encodeForm = document.querySelector('#encode-form');
+        encodeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get input, send it to decode.js
+            const output = encode(encodeInstruction);
+
+            // Check if output display already exists, if so, edit it, if not, add it
+            let outputDisplay = document.querySelector('#encode-output');
+            if(outputDisplay !== null) {
+                outputDisplay.innerHTML = output;
+            } else {
+                outputDisplay = document.createElement('h1');
+                outputDisplay.innerHTML = output;
+                outputDisplay.id = 'encode-output';
+                encodeForm.parentNode.appendChild(outputDisplay);
             }
         });
     </script>
