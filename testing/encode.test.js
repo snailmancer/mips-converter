@@ -1,4 +1,4 @@
-const encode = require('../api/encode.js');
+const {encode, testGivenArguments} = require('../api/encode.js');
 
 const e = 'Encoded instruction: ';
 
@@ -14,6 +14,8 @@ test('Encode J-type instructions', () => {
 test('Encode 1-arg instructions', () => {
     expect(encode('jr $ra')).toEqual(e + '000000 11111 00000 00000 00000 001000');
     expect(encode('mflo $t1')).toEqual(e + '000000 00000 00000 01001 00000 010010');
+    expect(encode('jalr $t0')).toEqual(e + '000000 01000 00000 11111 00000 001001');
+    expect(encode('jalr $t1, $t0')).toEqual(e + '000000 01000 00000 01001 00000 001001');
 });
 
 test('Encode 2-arg instructions', () => {
@@ -44,4 +46,35 @@ test('Encode bad inputs', () => {
     expect(encode('add$t0$t1$t2').startsWith('Error')).toBeTruthy();
     expect(encode('____').startsWith('Error')).toBeTruthy();
     expect(encode('').startsWith('Error')).toBeTruthy();
+    expect(encode('sll $t0, $t1, 56').startsWith('Error')).toBeTruthy();
+    expect(encode('sll $t0, $t1, -4').startsWith('Error')).toBeTruthy();
+    expect(encode('addi $t0, $t1, 70000').startsWith('Error')).toBeTruthy();
+    expect(encode('addi $t0, $t1, -10').startsWith('Error')).toBeTruthy();
+});
+
+test('Encode wrong formats', () => {
+    expect(encode('mult $t0, 12($t1)').startsWith('Error')).toBeTruthy();
+    expect(encode('jr $t0, $t1, 23').startsWith('Error')).toBeTruthy();
+    expect(encode('sra $t0, $t1').startsWith('Error')).toBeTruthy();
+    expect(encode('sra $t0, $t1, $t2').startsWith('Error')).toBeTruthy();
+    expect(encode('j $t0').startsWith('Error')).toBeTruthy();
+    expect(encode('j $t0, $t4').startsWith('Error')).toBeTruthy();
+    expect(encode('lb $t0, $t1').startsWith('Error')).toBeTruthy();
+    expect(encode('beq $t0, $t1, $t2').startsWith('Error')).toBeTruthy();
+    expect(encode('add $t0, $t1, 100').startsWith('Error')).toBeTruthy();
+});
+
+test('Test given arguments', () => {
+    expect(testGivenArguments(['add', '$t0', '$t1', '$t2', undefined])).toBeTruthy();
+    expect(testGivenArguments(['add', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['syscall', undefined, undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['syscall', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['mult', '$t0', '$t1', undefined, '12'])).toBeFalsy();
+    expect(testGivenArguments(['jr', '$t0', '$t1', '23', undefined])).toBeFalsy();
+    expect(testGivenArguments(['lb', '$t0', '$t1', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['j', '0xfe12', undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['j', '0xfe12', '$t0', undefined, undefined])).toBeFalsy();
+    expect(testGivenArguments(['jalr', '$t0', '$t1', undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['jalr', '$t0', undefined, undefined, undefined])).toBeTruthy();
+    expect(testGivenArguments(['jalr', '$t0', undefined, undefined, '12'])).toBeFalsy();
 });
